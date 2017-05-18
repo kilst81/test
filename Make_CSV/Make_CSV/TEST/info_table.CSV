@@ -1,0 +1,5 @@
+int,enum,int,string,float,vector<float>
+index,type_char,data_int,data_str,data_float,list
+111,CHAR_A,1234,onetwo,0.12,"0.1,0.2,0.3"
+222,CHAR_B,5678,three,3.45,"0.5,0.5,0.5"
+333,CHAR_C,9012,fourfive,123.1,"1.0, 1.3, 2.0"
