@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+using namespace std ;
+
 
 enum type_atom
 {
@@ -15,10 +18,23 @@ enum type_atom
 };
 
 
+struct SB_NeedEXP
+{
+	int Index = {} ;
+	vector<unsigned __int64> EXP ;
+};
+
+
 struct SB_Atom
 {
 	bool bSoul = false ;
 	bool bBody = false ;
+	int nSoulNeedIndex ;
+	int nBodyNeedIndex ;
+	vector<unsigned __int64> vSoulNeedEXP ;
+	vector<unsigned __int64> vBodyNeedEXP ;
+	unsigned __int64 nSoulNeedEXP = { 1000 } ;
+	unsigned __int64 nBodyNeedEXP = { 1000 } ;
 	int nSoul = { 0 } ;
 	int nBody = { 0 } ;
 
@@ -64,17 +80,26 @@ struct SB_Atom
 };
 
 
-struct SB_Data
+class StatusSoulBody
 {
+	unsigned __int64 EXP = {} ;
 	SB_Atom velfor ;
 	SB_Atom perint ;
 	SB_Atom tenend ;
 	SB_Atom spegra ;
-};
 
+	bool upVelocity ()		{ return velfor.upSoul () ; }
+	bool upForce ()			{ return velfor.upBody () ; }
 
-class SoulBody
-{
+	bool upPerspicacity ()	{ return perint.upSoul () ; }
+	bool upIntelligence ()	{ return perint.upBody () ; }
+
+	bool upTenacity ()		{ return tenend.upSoul () ; }
+	bool upEndurance ()		{ return tenend.upBody () ; }
+
+	bool upSpecificity ()	{ return spegra.upSoul () ; }
+	bool upGrace ()			{ return spegra.upBody () ; }
+
 
 
 };
