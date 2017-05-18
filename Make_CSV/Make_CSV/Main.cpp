@@ -343,6 +343,12 @@ public:
 	string getHeaderName () { return m_HeaderName ; }
 
 public :
+	void setHeaderName ( string name_ )
+	{
+		m_HeaderName = "OUT\\" ;
+		m_HeaderName += name_ ;
+		m_HeaderName += ".h" ;
+	}
 
 	void push ( ReadType object_ )
 	{
@@ -377,6 +383,18 @@ private :
 	map<string, ReadTable> m_mapTable ;
 
 public :
+	void setTableHeaderName ( string name_ )
+	{
+		m_HeaderName = "OUT\\" ;
+		m_HeaderName += name_ ;
+		m_HeaderName += ".h" ;
+	}
+
+	void setTypeHeaderName ( string name_ )
+	{
+		m_Type_H.setHeaderName ( name_ ) ;
+	}
+
 	void push ( ReadType object_ )
 	{
 		m_Type_H.push ( object_ ) ;
@@ -514,7 +532,7 @@ enum test_test
 	test_111,
 };
 
-int main ()
+int main ( int argc, char *argv[] )
 {
 	cout << typeid( int ).name () << endl ;
 	cout << typeid( float ).name () << endl ;
@@ -524,10 +542,17 @@ int main ()
 	// HeaderType csvType ;
 	HeaderTable csvTable ;
 
-	int n ;
-
+	if ( 2 < argc ) {
+		csvTable.setTableHeaderName ( argv[1] ) ;
+		csvTable.setTypeHeaderName ( argv[2] ) ;
+	}
+	else {
+		csvTable.setTableHeaderName ( "head" ) ;
+		csvTable.setTypeHeaderName ( "type" ) ;
+	}
+	
 	_finddata_t fd;
-	long handle;
+	intptr_t handle;
 	int result = 1;
 	handle = _findfirst ( ".\\CSV\\*.*", &fd );  //현재 폴더 내 모든 파일을 찾는다.
 
@@ -536,7 +561,6 @@ int main ()
 		return 0 ;
 	}
 
-	
 	while ( result != -1 ) {
 		string path = "CSV\\" ;
 		string name = path + fd.name ;
