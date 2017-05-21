@@ -192,6 +192,23 @@ public:
 		lhs_ << "\t" << "\t" << endl ;
 		lhs_ << "\t" << "\t" << "data[temp." << rhs_.m_Head.row[0].c_str () << "] = temp ;" << endl ;
 		lhs_ << "\t" << "}" << endl ;
+		lhs_ << "\t" << endl ;
+
+		/*
+		const table_character_data& operator [] ( int index_ )
+		{
+		return data[index_] ;
+		}
+		*/
+
+		lhs_ << "\t" << "const " << table_data.c_str () << "& operator [] ( " << rhs_.m_Type.row[0].c_str () << " key_ )" << endl ;
+		lhs_ << "\t" << "{" << endl ;
+		lhs_ << "\t" << "\t" << "map<" << rhs_.m_Type.row[0].c_str () << ", " << table_data.c_str () << ">::iterator it = data.find ( key_ ) ;" << endl ;
+		lhs_ << "\t" << "\t" << endl ;
+		lhs_ << "\t" << "\t" << "return ( it == data.end () ) ? " << table_data.c_str () << " () : it->second ;" << endl ;
+		lhs_ << "\t" << "}" << endl ;
+		lhs_ << "\t" << endl ;
+
 
 		lhs_ << "};" << endl ;
 		lhs_ << endl ;
