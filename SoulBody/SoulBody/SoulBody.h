@@ -6,6 +6,15 @@
 using namespace std ;
 
 
+enum ret
+{
+	_ok = 0,
+
+	_sb_not_enough_exp,
+	_sb_not_enough_soul,
+	_sb_not_enough_body,
+};
+
 enum type_atom
 {
 	atom_velocity = 0,
@@ -110,13 +119,13 @@ struct SB_Atom
 	int nSoul = { 0 } ;
 	int nBody = { 0 } ;
 
-	bool upSoul ( SB_EXP& exp_, int factor_ )
+	ret upSoul ( SB_EXP& exp_, int factor_ )
 	{
 		unsigned __int64 needEXP = exp_.getNeedEXP ( nSoulUpCount, factor_ ) ;
-		if ( ! needEXP ) return false ;
+		if ( ! needEXP ) return ret::_sb_not_enough_exp ;
 
 		if ( bSoul ) {
-			if ( ! nBody ) return false ;
+			if ( ! nBody ) return ret::_sb_not_enough_body ;
 			bSoul = false ;
 
 			--nBody ;
@@ -130,16 +139,16 @@ struct SB_Atom
 		++nSoul ;
 		++nSoulUpCount ;
 
-		return true ;
+		return ret::_ok ;
 	}
 
-	bool upBody ( SB_EXP& exp_, int factor_ )
+	ret upBody ( SB_EXP& exp_, int factor_ )
 	{
 		unsigned __int64 needEXP = exp_.getNeedEXP ( nBodyUpCount, factor_ ) ;
-		if ( ! needEXP ) return false ;
+		if ( ! needEXP ) return ret::_sb_not_enough_exp ;
 
 		if ( bBody ) {
-			if ( ! nSoul ) return false ;
+			if ( ! nSoul ) return ret::_sb_not_enough_soul ;
 			bBody = false ;
 
 			--nSoul ;
@@ -153,12 +162,24 @@ struct SB_Atom
 		++nBody ;
 		++nBodyUpCount ;
 
-		return true ;
+		return ret::_ok ;
 	}
 
-	void print ()
+	void print ( string soul_ = "SOUL", string body_ = "BODY" )
 	{
-		cout << "[SOUL: " << nSoul << " ] , [BODY: " << nBody << " ]" << " - " << nSoulUpCount << " , " << nBodyUpCount << endl ;
+		cout << "[" << soul_.c_str () << ": " ;
+		cout.fill ( ' ' ) ;
+		cout.width ( 3 ) ;
+		cout << nSoul << " ] , [" << body_.c_str () << ": " ;
+		cout.fill ( ' ' ) ;
+		cout.width ( 3 ) ;
+		cout << nBody << " ]" << " - " ;
+		cout.fill ( ' ' ) ;
+		cout.width ( 3 ) ;
+		cout << nSoulUpCount << " , " ;
+		cout.fill ( ' ' ) ;
+		cout.width ( 3 ) ;
+		cout << nBodyUpCount << endl ;
 	}
 
 };
@@ -201,17 +222,14 @@ private :
 public :
 	void pushEXP ( unsigned __int64 exp_ ) { m_EXP.addEXP ( exp_ ) ; }
 
-	bool upVelocity ()		{ return m_velfor.upSoul ( m_EXP, m_nFactor ) ; }
-	bool upForce ()			{ return m_velfor.upBody ( m_EXP, m_nFactor ) ; }
-	
-	bool upPerspicacity ()	{ return m_perint.upSoul ( m_EXP, m_nFactor) ; }
-	bool upIntelligence ()	{ return m_perint.upBody ( m_EXP, m_nFactor ) ; }
-	
-	bool upTenacity ()		{ return m_tenend.upSoul ( m_EXP, m_nFactor ) ; }
-	bool upEndurance ()		{ return m_tenend.upBody ( m_EXP, m_nFactor ) ; }
-	
-	bool upSpecificity ()	{ return m_spegra.upSoul ( m_EXP, m_nFactor ) ; }
-	bool upGrace ()			{ return m_spegra.upBody ( m_EXP, m_nFactor ) ; }
+	ret upVelocity ()		{ return m_velfor.upSoul ( m_EXP, m_nFactor ) ; }
+	ret upForce ()			{ return m_velfor.upBody ( m_EXP, m_nFactor ) ; }
+	ret upPerspicacity ()	{ return m_perint.upSoul ( m_EXP, m_nFactor ) ; }
+	ret upIntelligence ()	{ return m_perint.upBody ( m_EXP, m_nFactor ) ; }
+	ret upTenacity ()		{ return m_tenend.upSoul ( m_EXP, m_nFactor ) ; }
+	ret upEndurance ()		{ return m_tenend.upBody ( m_EXP, m_nFactor ) ; }
+	ret upSpecificity ()	{ return m_spegra.upSoul ( m_EXP, m_nFactor ) ; }
+	ret upGrace ()			{ return m_spegra.upBody ( m_EXP, m_nFactor ) ; }
 
 
 	void print ()
@@ -219,10 +237,10 @@ public :
 		cout << "----------------------------------" << endl ;
 		m_EXP.print () ;
 		cout << "----------------------------------" << endl ;
-		m_velfor.print () ;
-		m_perint.print () ;
-		m_tenend.print () ;
-		m_spegra.print () ;
+		m_velfor.print ( "Velcity", "Force" ) ;
+		m_perint.print ( "Percity", "Intce" ) ;
+		m_tenend.print ( "Tencity", "Endce" ) ;
+		m_spegra.print ( "Specity", "Grace" ) ;
 		cout << "==================================" << endl ;
 	}
 
