@@ -27,7 +27,6 @@ private:
 	
 	_read_table m_Type ;
 	_read_table m_Head ;
-	vector<_read_table> m_Data ;
 
 public:
 	string getFileName () const { return m_FileName ; }
@@ -59,10 +58,10 @@ public:
 		cout << endl ;
 		ifstream inFile ( filename_ );
 
-		if ( ! inFile.eof () ) inFile.getline ( inputString, 100 );
+		if ( ! inFile.eof () ) inFile.getline ( inputString, MAX_SIZE );
 		_read ( m_Type, inputString ) ;
 
-		if ( ! inFile.eof () ) inFile.getline ( inputString, 100 );
+		if ( ! inFile.eof () ) inFile.getline ( inputString, MAX_SIZE );
 		_read ( m_Head, inputString ) ;
 
 		print () ;
@@ -76,17 +75,17 @@ public:
 
 		cout << "Type spec" << endl ;
 		for ( auto it : m_Type.row ) {
-			cout.fill ( ' ' ) ;
-			cout.width ( 16 ) ;
-			cout << it.c_str () ;
+			// cout.fill ( ' ' ) ;
+			// cout.width ( 16 ) ;
+			cout << it.c_str () << endl ;
 		}
 		cout << endl ;
 
 		cout << "Head spec" << endl ;
 		for ( auto it : m_Head.row ) {
-			cout.fill ( ' ' ) ;
-			cout.width ( 16 ) ;
-			cout << it.c_str () ;
+			// cout.fill ( ' ' ) ;
+			// cout.width ( 16 ) ;
+			cout << it.c_str () << endl ;
 		}
 		cout << endl ;
 	}
@@ -172,21 +171,28 @@ public:
 		lhs_ << "\t" << "void add ( char* pstr_ )" << endl ;
 		lhs_ << "\t" << "{" << endl ;
 		lhs_ << "\t" << "\t" << table_data.c_str () << " temp ;" << endl ;
-		lhs_ << "\t" << "\t" << "char *ptr = nullptr ;" << endl ;
+		lhs_ << "\t" << "\t" << "char* context = nullptr ;" << endl ;
+		lhs_ << "\t" << "\t" << "char* ptr = nullptr ;" << endl ;
 		lhs_ << "\t" << "\t" << endl ;
 
-		lhs_ << "\t" << "\t" << "ptr = strtok ( pstr_, \",\" ) ;" << endl ;
+		lhs_ << "\t" << "\t" << "ptr = strtok_s ( pstr_, \",\", &context ) ;" << endl ;
 		lhs_ << "\t" << "\t" << "_Push ( temp." << rhs_.m_Head.row[0].c_str () << ", ptr ) ;" << endl ;
 		for ( int nI = 1 ; nI < rhs_.m_Type.row.size () ; ++nI ) {
-			lhs_ << "\t" << "\t" << "ptr = strtok ( NULL, \",\" ) ;" << endl ;
-
 			if ( strcmp ( rhs_.m_Type.row[nI].c_str (), "enum" ) ) {
-				lhs_ << "\t" << "\t" << "_Push ( temp." << rhs_.m_Head.row[nI].c_str () << ", ptr ) ;" << endl ;
+				lhs_ << "\t" << "\t" << "if ( ',' == *context ) { _Push ( temp." ;
+				lhs_ << rhs_.m_Head.row[ nI ].c_str () << ", nullptr ) ; ++context ; }" << endl ;
+
+				lhs_ << "\t" << "\t" << "else { ptr = strtok_s ( NULL, \",\", &context ) ; " ;
+				lhs_ << "_Push ( temp." << rhs_.m_Head.row[nI].c_str () << ", ptr ) ; }" << endl ;
 			}
 			else {
 				string read_type = "read_" ;
 				read_type += rhs_.m_Head.row[nI] ;
-				lhs_ << "\t" << "\t" << "temp." << rhs_.m_Head.row[nI].c_str () << " = " << read_type.c_str () << "::GetType ( ptr ) ;" << endl ;
+
+				lhs_ << "\t" << "\t" << "if ( ',' == *context ) { temp." << rhs_.m_Head.row[ nI ].c_str () << " = " << read_type.c_str () << "::GetType ( ptr ) ; ++context ; }" << endl ;
+
+				lhs_ << "\t" << "\t" << "else { ptr = strtok_s ( NULL, \",\", &context ) ; " ;
+				lhs_ << "temp." << rhs_.m_Head.row[nI].c_str () << " = " << read_type.c_str () << "::GetType ( ptr ) ; }" << endl ;
 			}
 		}
 		lhs_ << "\t" << "\t" << endl ;
@@ -197,7 +203,7 @@ public:
 		/*
 		const table_character_data& operator [] ( int index_ )
 		{
-		return data[index_] ;
+			return data[index_] ;
 		}
 		*/
 
@@ -247,7 +253,7 @@ public:
 		cout << endl ;
 		ifstream inFile ( filename_ );
 
-		if ( ! inFile.eof () ) inFile.getline ( inputString, 100 );
+		if ( ! inFile.eof () ) inFile.getline ( inputString, MAX_SIZE );
 
 		char *ptr = nullptr ;
 
@@ -256,7 +262,7 @@ public:
 
 		_read_type temp ;
 		while ( ! inFile.eof () ) {
-			inFile.getline ( inputString, 100 );
+			inFile.getline ( inputString, MAX_SIZE );
 			if ( ! strlen ( inputString ) ) break ;
 
 			ptr = strtok ( inputString, "," ) ;
@@ -354,10 +360,12 @@ class HeaderType
 {
 private :
 	string m_HeaderName = { "OUT\\type.h" } ;
+	string m_FileName = { "" } ;
 	map<string, ReadType> m_mapType ;
 
 public:
 	string getHeaderName () { return m_HeaderName ; }
+	string getFileName () { return m_FileName ; }
 
 public :
 	void setHeaderName ( string name_ )
@@ -365,6 +373,9 @@ public :
 		m_HeaderName = "OUT\\" ;
 		m_HeaderName += name_ ;
 		m_HeaderName += ".h" ;
+
+		m_FileName = name_ ;
+		m_FileName += ".h" ;
 	}
 
 	void push ( ReadType object_ )
@@ -430,7 +441,7 @@ public :
 
 		fout << "#pragma once" << endl ;
 		fout << endl ;
-		fout << "#include \"" << m_Type_H.getHeaderName ().c_str () << "\"" << endl ;
+		fout << "#include \"" << m_Type_H.getFileName ().c_str () << "\"" << endl ;
 		fout << "#include <vector>" << endl ;
 		fout << "#include <map>" << endl ;
 		fout << endl ;
@@ -438,11 +449,13 @@ public :
 		fout << "template< class _T_ >" << endl ;
 		fout << "void _Push ( vector<_T_>& list_, char* pstr_ )" << endl ;
 		fout << "{" << endl ;
+		fout << "\t" << "if ( !pstr_ ) return ;" << endl ;
 		fout << "\t" << "char *ptr = strtok ( pstr_, \",\" ) ;" << endl ;
 		fout << "\t" << endl ;
 		fout << "\t" << "while ( ptr != NULL ) {" << endl ;
-		fout << "\t" << "\t" << "if ( strstr ( typeid( _T_ ).name (), \"int\" ) ) list_.emplace_back ( atoi ( ptr ) ) ;" << endl ;
-		fout << "\t" << "\t" << "else if ( strstr ( typeid( _T_ ).name (), \"float\" ) ) list_.emplace_back ( atof ( ptr ) ) ;" << endl ;
+		fout << "\t" << "\t" << "if ( strstr ( typeid( _T_ ).name (), \"int\" ) ) list_.emplace_back ( ( pstr_ ) ? atoi ( pstr_ ) : 0 ) ;" << endl ;
+		fout << "\t" << "\t" << "else if ( strstr ( typeid( _T_ ).name (), \"float\" ) ) list_.emplace_back ( ( pstr_ ) ? atof ( pstr_ ) : 0.0 ) ;" << endl ;
+		fout << "\t" << "\t" << "else if ( strstr ( typeid( _T_ ).name (), \"bool\" ) ) list_.emplace_back ( ( '0' == pstr_[0] ) ? 0 : 1 ) ;" << endl ;
 		fout << "\t" << "\t" << endl ;
 		fout << "\t" << "\t" << "ptr = strtok ( NULL, \",\" ) ;" << endl ;
 		fout << "\t" << "}" << endl ;
@@ -452,20 +465,90 @@ public :
 		fout << "template< class _T_ >" << endl ;
 		fout << "void _Push ( _T_& data_, char* pstr_ )" << endl ;
 		fout << "{" << endl ;
-		fout << "\t" << "if ( strstr ( typeid( _T_ ).name (), \"int\" ) ) data_ = atoi ( pstr_ ) ;" << endl ;
-		fout << "\t" << "else if ( strstr ( typeid( _T_ ).name (), \"float\" ) ) data_ = atof ( pstr_ ) ;" << endl ;
+		fout << "\t" << "if ( strstr ( typeid( _T_ ).name (), \"int\" ) ) data_ = ( pstr_ ) ? atoi ( pstr_ ) : 0 ;" << endl ;
+		fout << "\t" << "else if ( strstr ( typeid( _T_ ).name (), \"float\" ) ) data_ = ( pstr_ ) ? atof ( pstr_ ) : 0.0 ;" << endl ;
+		fout << "\t" << "else if ( strstr ( typeid( _T_ ).name (), \"bool\" ) ) data_ = ( '0' == pstr_[0] ) ? 0 : 1 ;" << endl ;
 		fout << "}" << endl ;
 		fout << endl ;
 
-		fout << "void _Push ( string& data_, char* pstr_ )" << endl ;
-		fout << "{" << endl ;
-		fout << "\t" << "data_ = pstr_ ;" << endl ;
-		fout << "}" << endl ;
+		fout << "void _Push ( string& data_, char* pstr_ ) ;" << endl ;
+		// fout << "{" << endl ;
+		// fout << "\t" << "data_ = pstr_ ;" << endl ;
+		// fout << "}" << endl ;
 		fout << endl ;
 
 		for ( auto& it : m_mapTable ) {
 			fout << it.second ;
 		}
+
+
+		/*
+		class TableBase
+		{
+		public:
+		table_buff character ;
+
+		public:
+		template< class _T_ >
+		void load ( _T_& table_, string file_ )
+		{
+		char inputString[ MAX_SIZE ];
+		ifstream inFile ( file_ );
+
+		if ( !inFile.eof () ) inFile.getline ( inputString, 100 ); // type load
+		if ( !inFile.eof () ) inFile.getline ( inputString, 100 ); // head load
+
+		while ( !inFile.eof () ) {
+		inFile.getline ( inputString, 100 );
+		if ( !strlen ( inputString ) ) break ;
+
+		table_.add ( inputString ) ;
+		}
+		}
+
+		void load ( string path_ )
+		{
+		load ( character, path_ + "\\table_character.CSV" ) ;
+		}
+		};
+		*/
+
+		fout << "class TableBase" << endl ;
+		fout << "{" << endl ;
+		fout << "public :" << endl ;
+		for ( auto& it : m_mapTable ) {
+			string name = it.second.getTableName () ;
+			fout << "\t" << name.c_str () << " " ;
+			fout << name.substr ( name.find ( "_" ) + 1 ).c_str () << " ;" << endl ;
+		}
+		fout << "\t" << endl ;
+		fout << "\t" << "template< class _T_ >" << endl ;
+		fout << "\t" << "void load ( _T_& table_, string file_ )" << endl ;
+		fout << "\t" << "{" << endl ;
+		fout << "\t" << "\t" << "char inputString[" << MAX_SIZE << "] ;" << endl ;
+		fout << "\t" << "\t" << "ifstream inFile ( file_ ) ;" << endl ;
+		fout << "\t" << "\t" << endl ;
+		fout << "\t" << "\t" << "if ( ! inFile.eof () ) inFile.getline ( inputString, " << MAX_SIZE << " ) ; // type load" << endl ;
+		fout << "\t" << "\t" << "if ( ! inFile.eof () ) inFile.getline ( inputString, " << MAX_SIZE << " ) ; // head load" << endl ;
+		fout << "\t" << "\t" << endl ;
+		fout << "\t" << "\t" << "while ( ! inFile.eof () ) {" << endl ;
+		fout << "\t" << "\t" << "\t" << "inFile.getline ( inputString, " << MAX_SIZE << " ) ;" << endl ;
+		fout << "\t" << "\t" << "\t" << "if ( ! strlen ( inputString ) ) break ;" << endl ;
+		fout << "\t" << "\t" << "\t" << endl ;
+		fout << "\t" << "\t" << "\t" << "table_.add ( inputString ) ;" << endl ;
+		fout << "\t" << "\t" << "}" << endl ;
+		fout << "\t" << "}" << endl ;
+		fout << "\t" << endl ;
+		fout << "\t" << "void load ( string path_ )" << endl ;
+		fout << "\t" << "{" << endl ;
+		for ( auto& it : m_mapTable ) {
+			string name = it.second.getTableName () ;
+			fout << "\t" << "\t" << "load ( " ;
+			fout << name.substr ( name.find ( "_" ) + 1 ).c_str () << ", path_ + \"\\\\" ;
+			fout << it.second.getFileName ().c_str () << "\" ) ;" << endl ;
+		}
+		fout << "\t" << "}" << endl ;
+		fout << "};" << endl ;
 
 		fout.close () ;
 	}

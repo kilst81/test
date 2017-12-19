@@ -1,8 +1,0 @@
-int,enum,enum,int,int,int,int,int,int,int,int,float
-index,type_race,type_nature,velcity,percity,tencity,specity,force,intce,endce,grace,life
-1001,HUMAN,MALE,10,10,10,10,11,11,11,11,60
-1002,HUMAN,LADY,11,11,11,11,10,10,10,10,60
-1003,ELF,MALE,10,10,10,12,10,11,10,10,300
-1004,ELF,LADY,10,11,10,10,10,10,10,12,300
-1005,DWARF,MALE,10,10,10,10,12,10,12,10,90
-1006,DWARF,LADY,10,11,11,10,11,10,11,10,90
