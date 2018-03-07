@@ -185,10 +185,28 @@ struct SB_Atom
 };
 
 
+enum type_skill
+{
+	skill_none,
+
+	skill_fighter_smash, 
+	skill_fighter_jump,
+	skill_fighter_rage,
+
+	skill_mage_fireball,
+	skill_mage_arrow,
+	skill_mage_icestorm,
+
+	skill_rouge_shot,
+	skill_rouge_guide,
+	skill_rouge_quickshot,
+};
+
+
 struct SB_Skill
 {
-	int nIndex = { 0 } ;
-	int nLevel = { 0 } ;
+	type_atom	eType ;
+	int			nLevel = { 0 } ;
 };
 
 
@@ -205,19 +223,20 @@ private :
 	int m_endce = { 0 } ;
 	int m_grace = { 0 } ;
 
-	map<int, int> m_mapSkill ;
+	map<type_skill, SB_Skill> m_mapSkill ;
 };
 
 
 class StatusSoulBody
 {
 private :
-	SB_EXP m_EXP ;
-	int m_nFactor = { 0 } ;
+	SB_EXP	m_EXP ;
+	int		m_nFactor = { 0 } ;
 	SB_Atom m_velfor ;
 	SB_Atom m_perint ;
 	SB_Atom m_tenend ;
 	SB_Atom m_spegra ;
+
 
 public :
 	void pushEXP ( unsigned __int64 exp_ ) { m_EXP.addEXP ( exp_ ) ; }
@@ -245,3 +264,4 @@ public :
 	}
 
 };
+
