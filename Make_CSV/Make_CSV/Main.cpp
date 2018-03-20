@@ -455,7 +455,7 @@ public :
 		fout << "\t" << "while ( ptr != NULL ) {" << endl ;
 		fout << "\t" << "\t" << "if ( strstr ( typeid( _T_ ).name (), \"int\" ) ) list_.emplace_back ( ( pstr_ ) ? atoi ( pstr_ ) : 0 ) ;" << endl ;
 		fout << "\t" << "\t" << "else if ( strstr ( typeid( _T_ ).name (), \"float\" ) ) list_.emplace_back ( ( pstr_ ) ? atof ( pstr_ ) : 0.0 ) ;" << endl ;
-		fout << "\t" << "\t" << "else if ( strstr ( typeid( _T_ ).name (), \"bool\" ) ) list_.emplace_back ( ( '0' == pstr_[0] ) ? 0 : 1 ) ;" << endl ;
+		fout << "\t" << "\t" << "else if ( strstr ( typeid( _T_ ).name (), \"bool\" ) ) list_.emplace_back ( ( pstr_ ) ? ( ( '0' == pstr_[0] ) ? 0 : 1 ) : 0 ) ;" << endl ;
 		fout << "\t" << "\t" << endl ;
 		fout << "\t" << "\t" << "ptr = strtok ( NULL, \",\" ) ;" << endl ;
 		fout << "\t" << "}" << endl ;
@@ -467,7 +467,7 @@ public :
 		fout << "{" << endl ;
 		fout << "\t" << "if ( strstr ( typeid( _T_ ).name (), \"int\" ) ) data_ = ( pstr_ ) ? atoi ( pstr_ ) : 0 ;" << endl ;
 		fout << "\t" << "else if ( strstr ( typeid( _T_ ).name (), \"float\" ) ) data_ = ( pstr_ ) ? atof ( pstr_ ) : 0.0 ;" << endl ;
-		fout << "\t" << "else if ( strstr ( typeid( _T_ ).name (), \"bool\" ) ) data_ = ( '0' == pstr_[0] ) ? 0 : 1 ;" << endl ;
+		fout << "\t" << "else if ( strstr ( typeid( _T_ ).name (), \"bool\" ) ) data_ = ( pstr_ ) ? ( ( '0' == pstr_[0] ) ? 0 : 1 ) : 0 ;" << endl ;
 		fout << "}" << endl ;
 		fout << endl ;
 

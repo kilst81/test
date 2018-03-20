@@ -121,57 +121,39 @@ struct read_type_EXP
 	}
 };
 
-enum enum_type_GameItem
+enum enum_type_PlayObject
 {
-	enum_type_GameItem_none = 0,
-	GOLD = 10001,
-	GEM = 10002,
-	UC = 10003,
-	KEY = 10004,
-	BOX_1 = 10005,
-	BOX_2 = 10006,
-	BOX_3 = 10007,
+	enum_type_PlayObject_none = 0,
+	GOLD = 1,
+	EXP = 2,
+	POTION = 3,
+	POTION_DOT = 4,
+	TOWER = 5,
+	HEAL = 6,
+	OIL_TRUCK = 7,
+	OIL_AREA = 8,
+	SOL_HEAD = 9,
+	OIL_CAN = 10,
+	FIRE_BOTTLE = 11,
 };
 
-struct read_type_GameItem
+struct read_type_PlayObject
 {
-	static enum_type_GameItem GetType ( string type_ )
+	static enum_type_PlayObject GetType ( string type_ )
 	{
 		if ( ! type_.compare ( "GOLD" ) ) return GOLD ;
-		if ( ! type_.compare ( "GEM" ) ) return GEM ;
-		if ( ! type_.compare ( "UC" ) ) return UC ;
-		if ( ! type_.compare ( "KEY" ) ) return KEY ;
-		if ( ! type_.compare ( "BOX_1" ) ) return BOX_1 ;
-		if ( ! type_.compare ( "BOX_2" ) ) return BOX_2 ;
-		if ( ! type_.compare ( "BOX_3" ) ) return BOX_3 ;
+		if ( ! type_.compare ( "EXP" ) ) return EXP ;
+		if ( ! type_.compare ( "POTION" ) ) return POTION ;
+		if ( ! type_.compare ( "POTION_DOT" ) ) return POTION_DOT ;
+		if ( ! type_.compare ( "TOWER" ) ) return TOWER ;
+		if ( ! type_.compare ( "HEAL" ) ) return HEAL ;
+		if ( ! type_.compare ( "OIL_TRUCK" ) ) return OIL_TRUCK ;
+		if ( ! type_.compare ( "OIL_AREA" ) ) return OIL_AREA ;
+		if ( ! type_.compare ( "SOL_HEAD" ) ) return SOL_HEAD ;
+		if ( ! type_.compare ( "OIL_CAN" ) ) return OIL_CAN ;
+		if ( ! type_.compare ( "FIRE_BOTTLE" ) ) return FIRE_BOTTLE ;
 		
-		return enum_type_GameItem_none ;
-	}
-};
-
-enum enum_type_PlayItem
-{
-	enum_type_PlayItem_none = 0,
-	PLAY_GOLD = 1,
-	PLAY_EXP = 2,
-	PLAY_HEAL = 3,
-	PLAY_HEAL_DOT = 4,
-	PLAY_TOWER = 5,
-	PLAY_HEAL_INSTANT = 6,
-};
-
-struct read_type_PlayItem
-{
-	static enum_type_PlayItem GetType ( string type_ )
-	{
-		if ( ! type_.compare ( "PLAY_GOLD" ) ) return PLAY_GOLD ;
-		if ( ! type_.compare ( "PLAY_EXP" ) ) return PLAY_EXP ;
-		if ( ! type_.compare ( "PLAY_HEAL" ) ) return PLAY_HEAL ;
-		if ( ! type_.compare ( "PLAY_HEAL_DOT" ) ) return PLAY_HEAL_DOT ;
-		if ( ! type_.compare ( "PLAY_TOWER" ) ) return PLAY_TOWER ;
-		if ( ! type_.compare ( "PLAY_HEAL_INSTANT" ) ) return PLAY_HEAL_INSTANT ;
-		
-		return enum_type_PlayItem_none ;
+		return enum_type_PlayObject_none ;
 	}
 };
 
@@ -200,20 +182,18 @@ struct read_type_Team
 enum enum_type_Work
 {
 	enum_type_Work_none = 0,
-	NONE = 0,
 	INSTANT = 1,
 	USE = 2,
-	USE_WAY = 3,
+	OBJECT = 3,
 };
 
 struct read_type_Work
 {
 	static enum_type_Work GetType ( string type_ )
 	{
-		if ( ! type_.compare ( "NONE" ) ) return NONE ;
 		if ( ! type_.compare ( "INSTANT" ) ) return INSTANT ;
 		if ( ! type_.compare ( "USE" ) ) return USE ;
-		if ( ! type_.compare ( "USE_WAY" ) ) return USE_WAY ;
+		if ( ! type_.compare ( "OBJECT" ) ) return OBJECT ;
 		
 		return enum_type_Work_none ;
 	}

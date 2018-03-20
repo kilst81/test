@@ -131,6 +131,7 @@ struct table_BuildingStat_data
 	string Desc ;
 	enum_type_Team type_Team ;
 	int Point ;
+	int State ;
 	bool IsSwap ;
 	bool IsAttack ;
 	int Cool ;
@@ -162,6 +163,8 @@ struct table_BuildingStat
 		else { ptr = strtok_s ( NULL, ",", &context ) ; temp.type_Team = read_type_Team::GetType ( ptr ) ; }
 		if ( ',' == *context ) { _Push ( temp.Point, nullptr ) ; ++context ; }
 		else { ptr = strtok_s ( NULL, ",", &context ) ; _Push ( temp.Point, ptr ) ; }
+		if ( ',' == *context ) { _Push ( temp.State, nullptr ) ; ++context ; }
+		else { ptr = strtok_s ( NULL, ",", &context ) ; _Push ( temp.State, ptr ) ; }
 		if ( ',' == *context ) { _Push ( temp.IsSwap, nullptr ) ; ++context ; }
 		else { ptr = strtok_s ( NULL, ",", &context ) ; _Push ( temp.IsSwap, ptr ) ; }
 		if ( ',' == *context ) { _Push ( temp.IsAttack, nullptr ) ; ++context ; }
@@ -362,42 +365,6 @@ struct table_EXP
 	
 };
 
-struct table_GameItem_data
-{
-	int Index ;
-	string Desc ;
-	enum_type_GameItem type_GameItem ;
-};
-
-struct table_GameItem
-{
-	map<int, table_GameItem_data> data ;
-	
-	void add ( char* pstr_ )
-	{
-		table_GameItem_data temp ;
-		char* context = nullptr ;
-		char* ptr = nullptr ;
-		
-		ptr = strtok_s ( pstr_, ",", &context ) ;
-		_Push ( temp.Index, ptr ) ;
-		if ( ',' == *context ) { _Push ( temp.Desc, nullptr ) ; ++context ; }
-		else { ptr = strtok_s ( NULL, ",", &context ) ; _Push ( temp.Desc, ptr ) ; }
-		if ( ',' == *context ) { temp.type_GameItem = read_type_GameItem::GetType ( ptr ) ; ++context ; }
-		else { ptr = strtok_s ( NULL, ",", &context ) ; temp.type_GameItem = read_type_GameItem::GetType ( ptr ) ; }
-		
-		data[temp.Index] = temp ;
-	}
-	
-	const table_GameItem_data& operator [] ( int key_ )
-	{
-		map<int, table_GameItem_data>::iterator it = data.find ( key_ ) ;
-		
-		return ( it == data.end () ) ? table_GameItem_data () : it->second ;
-	}
-	
-};
-
 struct table_ItemDrop_data
 {
 	int Index ;
@@ -443,12 +410,13 @@ struct table_ItemDrop
 	
 };
 
-struct table_PlayItem_data
+struct table_PlayObject_data
 {
 	int Index ;
 	string Desc ;
 	enum_type_Work type_Work ;
-	enum_type_PlayItem type_PlayItem ;
+	enum_type_PlayObject type_PlayObject ;
+	float Radius ;
 	int Value ;
 	float ValueActive ;
 	int LifeTime ;
@@ -461,13 +429,13 @@ struct table_PlayItem_data
 	float AttackRange ;
 };
 
-struct table_PlayItem
+struct table_PlayObject
 {
-	map<int, table_PlayItem_data> data ;
+	map<int, table_PlayObject_data> data ;
 	
 	void add ( char* pstr_ )
 	{
-		table_PlayItem_data temp ;
+		table_PlayObject_data temp ;
 		char* context = nullptr ;
 		char* ptr = nullptr ;
 		
@@ -477,8 +445,10 @@ struct table_PlayItem
 		else { ptr = strtok_s ( NULL, ",", &context ) ; _Push ( temp.Desc, ptr ) ; }
 		if ( ',' == *context ) { temp.type_Work = read_type_Work::GetType ( ptr ) ; ++context ; }
 		else { ptr = strtok_s ( NULL, ",", &context ) ; temp.type_Work = read_type_Work::GetType ( ptr ) ; }
-		if ( ',' == *context ) { temp.type_PlayItem = read_type_PlayItem::GetType ( ptr ) ; ++context ; }
-		else { ptr = strtok_s ( NULL, ",", &context ) ; temp.type_PlayItem = read_type_PlayItem::GetType ( ptr ) ; }
+		if ( ',' == *context ) { temp.type_PlayObject = read_type_PlayObject::GetType ( ptr ) ; ++context ; }
+		else { ptr = strtok_s ( NULL, ",", &context ) ; temp.type_PlayObject = read_type_PlayObject::GetType ( ptr ) ; }
+		if ( ',' == *context ) { _Push ( temp.Radius, nullptr ) ; ++context ; }
+		else { ptr = strtok_s ( NULL, ",", &context ) ; _Push ( temp.Radius, ptr ) ; }
 		if ( ',' == *context ) { _Push ( temp.Value, nullptr ) ; ++context ; }
 		else { ptr = strtok_s ( NULL, ",", &context ) ; _Push ( temp.Value, ptr ) ; }
 		if ( ',' == *context ) { _Push ( temp.ValueActive, nullptr ) ; ++context ; }
@@ -503,32 +473,32 @@ struct table_PlayItem
 		data[temp.Index] = temp ;
 	}
 	
-	const table_PlayItem_data& operator [] ( int key_ )
+	const table_PlayObject_data& operator [] ( int key_ )
 	{
-		map<int, table_PlayItem_data>::iterator it = data.find ( key_ ) ;
+		map<int, table_PlayObject_data>::iterator it = data.find ( key_ ) ;
 		
-		return ( it == data.end () ) ? table_PlayItem_data () : it->second ;
+		return ( it == data.end () ) ? table_PlayObject_data () : it->second ;
 	}
 	
 };
 
-struct table_PlayItemDrop_data
+struct table_PlayObjectDrop_data
 {
 	int Index ;
 	int IndexBuilding ;
-	int IndexPlayItem ;
+	int IndexPlayObject ;
 	string Desc ;
 	int Count ;
 	float DropRate ;
 };
 
-struct table_PlayItemDrop
+struct table_PlayObjectDrop
 {
-	map<int, table_PlayItemDrop_data> data ;
+	map<int, table_PlayObjectDrop_data> data ;
 	
 	void add ( char* pstr_ )
 	{
-		table_PlayItemDrop_data temp ;
+		table_PlayObjectDrop_data temp ;
 		char* context = nullptr ;
 		char* ptr = nullptr ;
 		
@@ -536,8 +506,8 @@ struct table_PlayItemDrop
 		_Push ( temp.Index, ptr ) ;
 		if ( ',' == *context ) { _Push ( temp.IndexBuilding, nullptr ) ; ++context ; }
 		else { ptr = strtok_s ( NULL, ",", &context ) ; _Push ( temp.IndexBuilding, ptr ) ; }
-		if ( ',' == *context ) { _Push ( temp.IndexPlayItem, nullptr ) ; ++context ; }
-		else { ptr = strtok_s ( NULL, ",", &context ) ; _Push ( temp.IndexPlayItem, ptr ) ; }
+		if ( ',' == *context ) { _Push ( temp.IndexPlayObject, nullptr ) ; ++context ; }
+		else { ptr = strtok_s ( NULL, ",", &context ) ; _Push ( temp.IndexPlayObject, ptr ) ; }
 		if ( ',' == *context ) { _Push ( temp.Desc, nullptr ) ; ++context ; }
 		else { ptr = strtok_s ( NULL, ",", &context ) ; _Push ( temp.Desc, ptr ) ; }
 		if ( ',' == *context ) { _Push ( temp.Count, nullptr ) ; ++context ; }
@@ -548,11 +518,11 @@ struct table_PlayItemDrop
 		data[temp.Index] = temp ;
 	}
 	
-	const table_PlayItemDrop_data& operator [] ( int key_ )
+	const table_PlayObjectDrop_data& operator [] ( int key_ )
 	{
-		map<int, table_PlayItemDrop_data>::iterator it = data.find ( key_ ) ;
+		map<int, table_PlayObjectDrop_data>::iterator it = data.find ( key_ ) ;
 		
-		return ( it == data.end () ) ? table_PlayItemDrop_data () : it->second ;
+		return ( it == data.end () ) ? table_PlayObjectDrop_data () : it->second ;
 	}
 	
 };
@@ -610,10 +580,9 @@ public :
 	table_BuildingStat BuildingStat ;
 	table_CharacterStat CharacterStat ;
 	table_EXP EXP ;
-	table_GameItem GameItem ;
 	table_ItemDrop ItemDrop ;
-	table_PlayItem PlayItem ;
-	table_PlayItemDrop PlayItemDrop ;
+	table_PlayObject PlayObject ;
+	table_PlayObjectDrop PlayObjectDrop ;
 	table_Skill Skill ;
 	
 	template< class _T_ >
@@ -640,10 +609,9 @@ public :
 		load ( BuildingStat, path_ + "\\table_BuildingStat.CSV" ) ;
 		load ( CharacterStat, path_ + "\\table_CharacterStat.CSV" ) ;
 		load ( EXP, path_ + "\\table_EXP.CSV" ) ;
-		load ( GameItem, path_ + "\\table_GameItem.csv" ) ;
 		load ( ItemDrop, path_ + "\\table_ItemDrop.csv" ) ;
-		load ( PlayItem, path_ + "\\table_PlayItem.csv" ) ;
-		load ( PlayItemDrop, path_ + "\\table_PlayItemDrop.csv" ) ;
+		load ( PlayObject, path_ + "\\table_PlayObject.csv" ) ;
+		load ( PlayObjectDrop, path_ + "\\table_PlayObjectDrop.csv" ) ;
 		load ( Skill, path_ + "\\table_Skill.CSV" ) ;
 	}
 };

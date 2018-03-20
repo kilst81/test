@@ -1,0 +1,19 @@
+int,string,enum,enum,float,int,float,int,bool,float,float,float,float,float,float
+Index,Desc,type_Work,type_PlayObject,Radius,Value,ValueActive,LifeTime,IsAttack,HP,AD,DD,PD,AttackSpeed,AttackRange
+0,골드 1,INSTANT,GOLD,1,10,,17,0,0,0,0,0,0,0
+1,골드 2,INSTANT,GOLD,1,50,,17,0,0,0,0,0,0,0
+2,골드 3,INSTANT,GOLD,1,100,,17,0,0,0,0,0,0,0
+3,경험치 1,INSTANT,EXP,1,20,,17,0,0,0,0,0,0,0
+4,경험치 2,INSTANT,EXP,1,200,,17,0,0,0,0,0,0,0
+5,경험치 3,INSTANT,EXP,1,500,,17,0,0,0,0,0,0,0
+6,물약,USE,POTION,1,20,,17,0,0,0,0,0,0,0
+7,재생 물약,USE,POTION_DOT,1,5,5,17,0,0,0,0,0,0,0
+8,방어포탑,USE,TOWER,1,52,6,17,1,500,75,25,60,1.5,5
+9,회복,INSTANT,HEAL,1,10,,17,0,0,0,0,0,0,0
+10,회복,INSTANT,HEAL,1,15,,17,0,0,0,0,0,0,0
+11,회복,INSTANT,HEAL,1,20,,17,0,0,0,0,0,0,0
+12,유조차,OBJECT,OIL_TRUCK,3,5,,10,1,0,0,0,0,0,0
+13,기름지역,OBJECT,OIL_AREA,10,0,,5,,,,,,,
+14,여신상 머리,OBJECT,SOL_HEAD,2,0,,30,,,,,,,
+15,기름통,USE,OIL_CAN,1,0,,17,,,,,,,
+16,화염병,USE,FIRE_BOTTLE,1,0,,17,,,,,,,
