@@ -15,11 +15,11 @@ using namespace std ;
 
 #include "OUT\in_head.h"
 
-
+/*
 class TableBase
 {
-private:
-	table_character m_character ;
+public:
+	table_buff character ;
 
 public:
 	template< class _T_ >
@@ -41,56 +41,28 @@ public:
 
 	void load ( string path_ )
 	{
-		load ( m_character, path_ + "\\table_character.CSV" ) ;
-
-		/*
-		string folder = path_ ;
-		
-		folder += "\\*.*" ;
-
-		_finddata_t fd;
-		intptr_t handle;
-		int result = 1;
-		handle = _findfirst ( folder.c_str (), &fd ) ;
-
-		if ( handle == -1 ) {
-			printf ( "There were no files.\n" );
-			return 0 ;
-		}
-
-		while ( result != -1 ) {
-			string path = path_ + "\\" ;
-			string name = path + fd.name ;
-
-			if ( string::npos != name.find ( "table_character" ) ) load ( m_character, name ) ;
-
-			printf ( "File: %s\n", fd.name );
-			result = _findnext ( handle, &fd );
-		}
-
-		_findclose ( handle );
-		*/
+		load ( character, path_ + "\\table_character.CSV" ) ;
 	}
 
 	void print ()
 	{
-		for ( auto& it : m_character.data ) {
-			cout << it.second.index << " , " << it.second.type_race << " , " << it.second.type_nature << " , " << it.second.life << endl ;
+		for ( auto& it : character.data ) {
+			cout << it.second.index << " , " << endl ;
 		}
 	}
 
 };
-
+*/
 
 int main ()
 {
 	TableBase base ;
 
 	base.load ( "CSV" ) ;
-	base.print () ;
 
 	return 0 ;
 
+	/*
 	_finddata_t fd;
 	intptr_t handle;
 	int result = 1;
@@ -109,7 +81,7 @@ int main ()
 	_findclose ( handle );
 
 
-	table_character testmake ;
+	table_buff testmake ;
 
 	char inputString[MAX_SIZE];
 	cout << endl ;
@@ -129,7 +101,7 @@ int main ()
 	inFile.close ();
 
 	for ( auto& it : testmake.data ) {
-		cout << it.second.index << " , " << it.second.type_race << " , " << it.second.type_nature << " , " << it.second.life << endl ;
+		cout << it.second.index << " , " << endl ;
 	}
 
 	cout << testmake[99].index << endl ;
@@ -138,6 +110,7 @@ int main ()
 	cout << testmake[96].index << endl ;
 
 	return 0 ;
+	*/
 }
 
 
